@@ -1,0 +1,31 @@
+.TH EYEZ 1 "BUILDDATE" "Version VERSION" "User Commands"
+.SH NAME
+eyez \- is the powerful CLI tool for viewing image in the terminal (Mostly any terminal).
+.SH SYNOPSIS
+.B eyez
+.RI [ options ] [file]
+.SH DESCRIPTION
+Eyez is the powerful CLI tool for viewing image in the terminal (Mostly any terminal).
+This tool is work with fzf preview along with pipe.
+
+.PP
+\fBUsage\fP:
+
+.EX
+eyez [file] [width]
+.EE
+
+
+.SH EXAMPLES
+.TP
+eyez image.png
+.TP
+eyez image.png 50
+.TP
+fzf --preview="eyez {} 40"
+
+.SH SEE ALSO
+.BR telepath (1),
+.BR chatz (1),
+.SH AUTHOR
+Written by tech-thinker, as part of the `eyez` project.
