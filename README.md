@@ -15,7 +15,7 @@
 
 It’s designed to work seamlessly with tools like `fzf`, pipes, and standard Unix workflows, making it perfect for developers who live in the terminal.
 
-<!--![Screenshot](docs/screenshot.png)-->
+![Screenshot](docs/screenshot.png)
 
 ### Supported Images
 - PNG
