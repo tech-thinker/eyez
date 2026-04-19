@@ -11,6 +11,8 @@
 <!-- ![GitHub pull requests](https://img.shields.io/github/issues-pr/tech-thinker/eyez) -->
 <!-- ![Coverage](https://img.shields.io/codecov/c/github/tech-thinker/eyez) -->
 
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/O5O41Y49V9)
+
 *Eyez* is a powerful CLI tool that lets you view images directly inside your terminal — no GUI required.
 
 It’s designed to work seamlessly with tools like `fzf`, pipes, and standard Unix workflows, making it perfect for developers who live in the terminal.
