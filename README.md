@@ -88,10 +88,10 @@ cat <image> | eyez --width <custom-width>
 
 - Preview images as default width (80 char) with `fzf`
 ```sh
-fzf --preview="eyez"
+fzf --preview="eyez {}"
 ```
 
 - Preview images as custom width with `fzf`
 ```sh
-fzf --preview="eyez --width <custom-width>"
+fzf --preview="eyez --width <custom-width> {}"
 ```
