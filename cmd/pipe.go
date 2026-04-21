@@ -3,25 +3,24 @@ package cmd
 import (
 	"image"
 	"os"
-	"strconv"
 
 	"github.com/tech-thinker/eyez/consts"
 	"github.com/tech-thinker/eyez/renderer"
 	"github.com/tech-thinker/eyez/utils"
 )
 
-func Pipe(in *os.File) {
-	var width int64 = consts.DEFAULT_WIDTH
-
-	img, _, err := image.Decode(os.Stdin)
-	if err != nil {
-		panic(err)
+func Pipe(in *os.File, width int64) error {
+	if width <= 0 {
+		width = consts.DEFAULT_WIDTH
 	}
 
-	if len(os.Args) > 1 {
-		width, _ = strconv.ParseInt(os.Args[1], 10, 64)
+	img, _, err := image.Decode(in)
+	if err != nil {
+		return err
 	}
 
 	img = utils.Resize(img, int(width))
 	renderer.Render(img)
+
+	return nil
 }

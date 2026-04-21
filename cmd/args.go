@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"image"
 	"os"
-	"strconv"
 
 	"github.com/tech-thinker/eyez/consts"
 	"github.com/tech-thinker/eyez/renderer"
@@ -12,31 +11,26 @@ import (
 	"github.com/tech-thinker/eyez/validator"
 )
 
-func CommandArgs() {
-	var width int64 = consts.DEFAULT_WIDTH
+func CommandArgs(filename string, width int64) error {
 
-	if len(os.Args) < 2 {
-		fmt.Printf("Usages: %s <file-name> <width>\n", os.Args[0])
-		return
+	if width <= 0 {
+		width = consts.DEFAULT_WIDTH
 	}
-	filename := os.Args[1]
 
 	err := validator.Validate(filename)
 	if err != nil {
 		fmt.Println(err)
+		return err
 	}
 
 	f, _ := os.Open(filename)
 	defer f.Close()
 	img, _, err := image.Decode(f)
 	if err != nil {
-		panic(err)
-	}
-
-	if len(os.Args) > 2 {
-		width, _ = strconv.ParseInt(os.Args[2], 10, 64)
+		return err
 	}
 
 	img = utils.Resize(img, int(width))
 	renderer.Render(img)
+	return nil
 }

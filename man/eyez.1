@@ -12,7 +12,8 @@ This tool is work with fzf preview along with pipe.
 \fBUsage\fP:
 
 .EX
-eyez [file] [width]
+eyez -w=<width> [file]
+eyez --width <width> [file]
 .EE
 
 
@@ -20,9 +21,9 @@ eyez [file] [width]
 .TP
 eyez image.png
 .TP
-eyez image.png 50
+eyez --width <custom-width> image.png
 .TP
-fzf --preview="eyez {} 40"
+fzf --preview="eyez --w=<custom-width> {}"
 
 .SH SEE ALSO
 .BR telepath (1),
