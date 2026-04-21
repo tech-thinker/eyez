@@ -1,4 +1,4 @@
-package utils
+package resizer
 
 import (
 	"image"
@@ -6,7 +6,10 @@ import (
 	"golang.org/x/image/draw"
 )
 
-func Resize(src image.Image, newW int) image.Image {
+type CatmullRom struct {
+}
+
+func (r *CatmullRom) Resize(src image.Image, newW int) image.Image {
 	ration := float64(src.Bounds().Max.X) / float64(src.Bounds().Max.Y)
 	newH := int(float64(newW)/ration + 0.5)
 
@@ -14,6 +17,5 @@ func Resize(src image.Image, newW int) image.Image {
 
 	// high-quality scaling
 	draw.CatmullRom.Scale(dst, dst.Bounds(), src, src.Bounds(), draw.Over, nil)
-
 	return dst
 }

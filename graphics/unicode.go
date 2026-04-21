@@ -1,4 +1,4 @@
-package renderer
+package graphics
 
 import (
 	"fmt"
@@ -13,7 +13,10 @@ import (
 	_ "golang.org/x/image/webp"
 )
 
-func clamp(v float64) int {
+type Unicode struct {
+}
+
+func (*Unicode) clamp(v float64) int {
 	if v < 0 {
 		return 0
 	}
@@ -23,7 +26,7 @@ func clamp(v float64) int {
 	return int(v)
 }
 
-func brightness(r, g, b uint32) float64 {
+func (*Unicode) brightness(r, g, b uint32) float64 {
 	rf := float64(r >> 8)
 	gf := float64(g >> 8)
 	bf := float64(b >> 8)
@@ -31,7 +34,7 @@ func brightness(r, g, b uint32) float64 {
 	return 0.299*rf + 0.587*gf + 0.114*bf
 }
 
-func Render(img image.Image) {
+func (*Unicode) Draw(img image.Image) error {
 	rgba := img.(*image.RGBA)
 	b := rgba.Bounds()
 	pix := rgba.Pix
@@ -60,4 +63,5 @@ func Render(img image.Image) {
 		}
 		fmt.Print("\033[0m\n") // reset once per line
 	}
+	return nil
 }

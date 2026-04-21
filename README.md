@@ -95,3 +95,8 @@ fzf --preview="eyez {}"
 ```sh
 fzf --preview="eyez --width <custom-width> {}"
 ```
+
+- See help
+```sh
+eyez --help
+```

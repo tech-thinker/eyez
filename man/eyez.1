@@ -3,25 +3,53 @@
 eyez \- is the powerful CLI tool for viewing image in the terminal (Mostly any terminal).
 .SH SYNOPSIS
 .B eyez
-.RI [ options ] [file]
+.RI [global\ options]\ [file]
 .SH DESCRIPTION
 Eyez is the powerful CLI tool for viewing image in the terminal (Mostly any terminal).
 This tool is work with fzf preview along with pipe.
 
-.PP
-\fBUsage\fP:
-
+.SH USAGE
 .EX
-eyez -w=<width> [file]
-eyez --width <width> [file]
+\fBeyez\fR -w=<width> [file]
+\fBeyez\fR --width <width> [file]
 .EE
 
+.SH COMMANDS
+.TP
+\fBhelp, h\fR
+Show help information for commands or options.
+
+.SH GLOBAL OPTIONS
+.TP
+\fB-w, --width\fR \fIvalue\fR
+Set output width in characters.
+Default: 80
+
+.TP
+\fB-g, --graphics\fR \fIvalue\fR
+Set rendering mode.
+Accepted values: unicode, ascii
+Default: unicode
+
+.TP
+\fB-a, --algo\fR \fIvalue\fR
+Image scaling algorithm.
+Accepted values: catmull-rom, lanczos
+Default: catmull-rom
+
+.TP
+\fB-h, --help\fR
+Display help information and exit.
+
+.TP
+\fB-v, --version\fR
+Print version information and exit.
 
 .SH EXAMPLES
 .TP
-eyez image.png
+eyez <image>
 .TP
-eyez --width <custom-width> image.png
+eyez --width <custom-width> <image>
 .TP
 fzf --preview="eyez --w=<custom-width> {}"
 
