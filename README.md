@@ -100,3 +100,12 @@ fzf --preview="eyez --width <custom-width> {}"
 ```sh
 eyez --help
 ```
+
+### Options
+| Option              | Description                                                                |
+| ------------------- | -------------------------------------------------------------------------- |
+| `-w, --width value` | Set output width in characters (default: `80`)                             |
+| `-g, --graphics`    | Rendering mode: `unicode`, `ascii` (default: `unicode`)                    |
+| `-a, --algo`        | Image scaling algorithm: `catmull-rom`, `lanczos` (default: `catmull-rom`) |
+| `-h, --help`        | Display help information and exit                                          |
+| `-v, --version`     | Print version information and exit                                         |
