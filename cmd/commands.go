@@ -57,8 +57,10 @@ func (c *commands) applySettings(g string, a string) {
 		c.g = new(graphics.Unicode)
 	} else if strings.EqualFold(g, consts.GRAPHICS_ASCII) {
 		c.g = new(graphics.ASCII)
+	} else if strings.EqualFold(g, consts.GRAPHICS_KITTY) {
+		c.g = new(graphics.Kitty)
 	} else {
-		fmt.Printf("Graphics must be in [%s|%s].\n", consts.GRAPHICS_UNICODE, consts.GRAPHICS_ASCII)
+		fmt.Printf("Graphics must be in [%s, %s, %s].\n", consts.GRAPHICS_UNICODE, consts.GRAPHICS_ASCII, consts.GRAPHICS_KITTY)
 		os.Exit(-1)
 	}
 
@@ -67,7 +69,7 @@ func (c *commands) applySettings(g string, a string) {
 	} else if strings.EqualFold(a, consts.ALGO_LANCZOS) {
 		c.algo = new(resizer.Lanczos)
 	} else {
-		fmt.Printf("Algorithm must be in [%s|%s].\n", consts.ALGO_CATMULL_ROM, consts.ALGO_LANCZOS)
+		fmt.Printf("Algorithm must be in [%s, %s].\n", consts.ALGO_CATMULL_ROM, consts.ALGO_LANCZOS)
 		os.Exit(-1)
 	}
 }

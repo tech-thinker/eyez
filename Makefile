@@ -2,7 +2,7 @@ VERSION := $(or $(AppVersion), "v0.0.0")
 COMMIT := $(or $(shell git rev-parse --short HEAD), "unknown")
 BUILDDATE := $(shell date +%Y-%m-%d)
 
-LDFLAGS := -X 'main.AppVersion=$(VERSION)' -X 'main.CommitHash=$(COMMIT)' -X 'main.BuildDate=$(BUILDDATE)'
+LDFLAGS := -X 'main.AppVersion=$(VERSION)' -X 'main.CommitHash=$(COMMIT)' -X 'main.BuildDate=$(BUILDDATE)' -s -w
 
 all: build
 

@@ -40,14 +40,14 @@ func main() {
 			},
 			&cli.StringFlag{
 				Name:        "graphics",
-				Usage:       fmt.Sprintf("graphics type [%s or %s]", consts.GRAPHICS_UNICODE, consts.GRAPHICS_ASCII),
+				Usage:       fmt.Sprintf("graphics type [%s, %s, %s]", consts.GRAPHICS_UNICODE, consts.GRAPHICS_ASCII, consts.GRAPHICS_KITTY),
 				Aliases:     []string{"g"},
 				Value:       consts.DEFAULT_GRAPHICS,
 				Destination: &graphics,
 			},
 			&cli.StringFlag{
 				Name:        "algo",
-				Usage:       fmt.Sprintf("algo type [%s or %s]", consts.ALGO_CATMULL_ROM, consts.ALGO_LANCZOS),
+				Usage:       fmt.Sprintf("algo type [%s, %s]", consts.ALGO_CATMULL_ROM, consts.ALGO_LANCZOS),
 				Aliases:     []string{"a"},
 				Value:       consts.DEFAULT_ALGORITHM,
 				Destination: &algo,

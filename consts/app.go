@@ -9,6 +9,7 @@ const (
 const (
 	GRAPHICS_UNICODE = "unicode"
 	GRAPHICS_ASCII   = "ascii"
+	GRAPHICS_KITTY   = "kitty"
 )
 
 const (

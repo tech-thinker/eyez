@@ -28,6 +28,7 @@ It’s designed to work seamlessly with tools like `fzf`, pipes, and standard Un
 
 ### Features
 - View images in terminal (supports most modern terminals)
+- Supported graphics - (`UNICODE`, `ASCII`, `KITTY`)
 - Works beautifully with `fzf` preview
 - Pipe-friendly — integrates into your CLI workflows
 - Fast and lightweight
@@ -108,7 +109,7 @@ eyez --help
 | Option              | Description                                                                |
 | ------------------- | -------------------------------------------------------------------------- |
 | `-w, --width value` | Set output width in characters (default: `80`)                             |
-| `-g, --graphics`    | Rendering mode: `unicode`, `ascii` (default: `unicode`)                    |
+| `-g, --graphics`    | Rendering mode: `unicode`, `ascii`, `kitty` (default: `unicode`)           |
 | `-a, --algo`        | Image scaling algorithm: `catmull-rom`, `lanczos` (default: `catmull-rom`) |
 | `-h, --help`        | Display help information and exit                                          |
 | `-v, --version`     | Print version information and exit                                         |

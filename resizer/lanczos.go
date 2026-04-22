@@ -12,7 +12,7 @@ type Lanczos struct {
 
 func (r *Lanczos) Resize(src image.Image, newW int) image.Image {
 	resized := imaging.Resize(src, newW, 0, imaging.Lanczos)
-	// Step 2: convert to RGBA
+
 	b := resized.Bounds()
 	dst := image.NewRGBA(b)
 
