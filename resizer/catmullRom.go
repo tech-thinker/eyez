@@ -15,7 +15,6 @@ func (r *CatmullRom) Resize(src image.Image, newW int) image.Image {
 
 	dst := image.NewRGBA(image.Rect(0, 0, newW, newH))
 
-	// high-quality scaling
 	draw.CatmullRom.Scale(dst, dst.Bounds(), src, src.Bounds(), draw.Over, nil)
 	return dst
 }
