@@ -60,10 +60,12 @@ sudo mv eyez /usr/bin
 ```
 
 ### Windows Installation
-```sh
-TAG=<tag-name>
-curl -sL "https://github.com/tech-thinker/eyez/releases/download/${TAG}/eyez-windows-amd64.exe" -o eyez.exe
-eyez.exe
+```powershell
+$TAG = "<tag-name>"
+$url = "https://github.com/tech-thinker/eyez/releases/download/$TAG/eyez-windows-amd64.exe"
+$output = "eyez.exe"
+Invoke-WebRequest -Uri $url -OutFile $output
+.\eyez.exe
 ```
 
 ## Usage
@@ -102,6 +104,7 @@ eyez --help
 ```
 
 ### Options
+
 | Option              | Description                                                                |
 | ------------------- | -------------------------------------------------------------------------- |
 | `-w, --width value` | Set output width in characters (default: `80`)                             |
