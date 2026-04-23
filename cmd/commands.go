@@ -29,7 +29,10 @@ func (c *commands) ByArgs(filename string, width int64) error {
 		return err
 	}
 
-	f, _ := os.Open(filename)
+	f, err := os.Open(filename)
+	if err != nil {
+		return err
+	}
 	defer f.Close()
 	img, _, err := image.Decode(f)
 	if err != nil {
@@ -37,8 +40,7 @@ func (c *commands) ByArgs(filename string, width int64) error {
 	}
 
 	img = c.algo.Resize(img, int(width))
-	c.g.Draw(img)
-	return nil
+	return c.g.Draw(img)
 }
 
 func (c *commands) ByStdin(in *os.File, width int64) error {
@@ -48,8 +50,7 @@ func (c *commands) ByStdin(in *os.File, width int64) error {
 	}
 
 	img = c.algo.Resize(img, int(width))
-	c.g.Draw(img)
-	return nil
+	return c.g.Draw(img)
 }
 
 func (c *commands) applySettings(g string, a string) {

@@ -2,3 +2,5 @@ eyez
 build/
 
 coverage.out
+*.DS_Store
+*.exe
