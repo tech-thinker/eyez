@@ -74,5 +74,7 @@ func (k *Kitty) Draw(img image.Image) error {
 
 		offset = end
 	}
+
+	fmt.Fprintln(w)
 	return w.Flush()
 }
