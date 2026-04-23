@@ -9,8 +9,9 @@ var supportedExtensions = []string{".png", ".jpg", ".jpeg", ".gif", ".bmp", ".we
 
 func Validate(filename string) error {
 
+	lowerFilename := strings.ToLower(filename)
 	for _, ext := range supportedExtensions {
-		if strings.HasSuffix(filename, ext) {
+		if strings.HasSuffix(lowerFilename, ext) {
 			return nil
 		}
 	}
