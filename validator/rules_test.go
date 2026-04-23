@@ -41,6 +41,16 @@ func TestValidate(t *testing.T) {
 			wantErr:  false,
 		},
 		{
+			name:     "valid multiple dots supported extension",
+			filename: "image.backup.png",
+			wantErr:  false,
+		},
+		{
+			name:     "invalid multiple dots unsupported extension",
+			filename: "image.backup.txt",
+			wantErr:  true,
+		},
+		{
 			name:     "invalid extension txt",
 			filename: "document.txt",
 			wantErr:  true,
@@ -48,6 +58,11 @@ func TestValidate(t *testing.T) {
 		{
 			name:     "invalid extension pdf",
 			filename: "document.pdf",
+			wantErr:  true,
+		},
+		{
+			name:     "empty filename",
+			filename: "",
 			wantErr:  true,
 		},
 		{
@@ -74,6 +89,16 @@ func TestValidate(t *testing.T) {
 			name:     "uppercase filename and extension",
 			filename: "PICTURE.JPG",
 			wantErr:  false,
+		},
+		{
+			name:     "very long filename supported extension",
+			filename: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.png",
+			wantErr:  false,
+		},
+		{
+			name:     "very long filename unsupported extension",
+			filename: "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb.txt",
+			wantErr:  true,
 		},
 	}
 

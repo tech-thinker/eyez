@@ -45,7 +45,7 @@ func TestKittyDraw(t *testing.T) {
 
 		err := k.Draw(img)
 
-		// Must close pipe and restore stout quickly to avoid deadlocking tests!
+		// Must close pipe and restore stdout quickly to avoid deadlocking tests!
 		w.Close()
 		os.Stdout = oldStdout
 

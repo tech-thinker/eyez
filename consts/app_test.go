@@ -2,7 +2,7 @@ package consts
 
 import "testing"
 
-// This tests is just to avoid unknowingly change of constants value
+// This test is just to avoid unintentional changes to constant values.
 func TestConstantsValues(t *testing.T) {
 	// Defaults
 	if DEFAULT_WIDTH != 80 {
