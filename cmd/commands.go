@@ -25,7 +25,6 @@ type commands struct {
 func (c *commands) ByArgs(filename string, width int64) error {
 	err := validator.Validate(filename)
 	if err != nil {
-		fmt.Println(err)
 		return err
 	}
 

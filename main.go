@@ -58,10 +58,16 @@ func main() {
 			isPiped := (stat.Mode() & os.ModeCharDevice) == 0
 			cmd := cmd.NewCommands(graphics, algo)
 			if isPiped {
-				cmd.ByStdin(os.Stdin, width)
+				err := cmd.ByStdin(os.Stdin, width)
+				if err != nil {
+					return err
+				}
 			} else {
 				if c.Args().Len() > 0 {
-					cmd.ByArgs(c.Args().First(), width)
+					err := cmd.ByArgs(c.Args().First(), width)
+					if err != nil {
+						return err
+					}
 				} else {
 					fmt.Println("Error: missing required arguments")
 					cli.ShowAppHelp(c)
