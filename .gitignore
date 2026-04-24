@@ -1,5 +1,6 @@
 eyez
 build/
+coverage/
 
 coverage.out
 *.DS_Store

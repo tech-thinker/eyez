@@ -5,6 +5,7 @@ import (
 	"image/color"
 	"image/png"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"testing"
 
@@ -81,6 +82,14 @@ func TestByArgs(t *testing.T) {
 	if err == nil {
 		t.Errorf("ByArgs expected error for unsupported format, got nil")
 	}
+
+	// Test valid extension but invalid image data
+	invalidImgPath := filepath.Join(t.TempDir(), "invalid.png")
+	os.WriteFile(invalidImgPath, []byte("not an image"), 0644)
+	err = c.ByArgs(invalidImgPath, 10)
+	if err == nil {
+		t.Errorf("ByArgs expected error for invalid image data, got nil")
+	}
 }
 
 func TestByStdin(t *testing.T) {
@@ -117,4 +126,32 @@ func TestByStdin(t *testing.T) {
 	if err == nil {
 		t.Errorf("ByStdin expected error for invalid image data, got nil")
 	}
+}
+
+func TestNewCommandsInvalidGraphics(t *testing.T) {
+	if os.Getenv("BE_CRASHER") == "1" {
+		NewCommands("invalid_graphics", consts.ALGO_LANCZOS)
+		return
+	}
+	cmd := exec.Command(os.Args[0], "-test.run=TestNewCommandsInvalidGraphics")
+	cmd.Env = append(os.Environ(), "BE_CRASHER=1")
+	err := cmd.Run()
+	if e, ok := err.(*exec.ExitError); ok && !e.Success() {
+		return
+	}
+	t.Fatalf("process ran with err %v, want exit status != 0", err)
+}
+
+func TestNewCommandsInvalidAlgorithm(t *testing.T) {
+	if os.Getenv("BE_CRASHER") == "1" {
+		NewCommands(consts.GRAPHICS_ASCII, "invalid_algorithm")
+		return
+	}
+	cmd := exec.Command(os.Args[0], "-test.run=TestNewCommandsInvalidAlgorithm")
+	cmd.Env = append(os.Environ(), "BE_CRASHER=1")
+	err := cmd.Run()
+	if e, ok := err.(*exec.ExitError); ok && !e.Success() {
+		return
+	}
+	t.Fatalf("process ran with err %v, want exit status != 0", err)
 }
