@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"errors"
 	"image"
 	"image/color"
 	"image/png"
@@ -8,10 +9,17 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/tech-thinker/eyez/consts"
 )
+
+type errorReader struct{}
+
+func (errorReader) Read(p []byte) (n int, err error) {
+	return 0, errors.New("read error")
+}
 
 // createTempPNG is a helper to create a small PNG image for testing
 func createTempPNG(t *testing.T) string {
@@ -147,6 +155,27 @@ func TestByStdin(t *testing.T) {
 		t.Errorf("ByStdin expected nil error for valid SVG, got %v", err)
 	}
 
+	// Test valid SVG with leading whitespace via stdin (triggers svg.Decode fallback when image.Decode fails)
+	svgWsR, svgWsW, _ := os.Pipe()
+	svgWsW.Write([]byte(`   <svg viewBox="0 0 100 100"><rect width="100" height="100" fill="green"/></svg>`))
+	svgWsW.Close()
+
+	err = c.ByStdin(svgWsR, 10)
+	svgWsR.Close()
+	if err != nil {
+		t.Errorf("ByStdin expected nil error for SVG with leading whitespace, got %v", err)
+	}
+
+	// Test ByStdin with closed file to trigger io.ReadAll error
+	closedR, closedW, _ := os.Pipe()
+	closedR.Close()
+	closedW.Close()
+
+	err = c.ByStdin(closedR, 10)
+	if err == nil {
+		t.Errorf("ByStdin expected error for closed reader, got nil")
+	}
+
 	// Pass invalid image data to deduce image decode error
 	r, w, _ := os.Pipe()
 	w.Write([]byte("not an image"))
@@ -158,6 +187,32 @@ func TestByStdin(t *testing.T) {
 	if err == nil {
 		t.Errorf("ByStdin expected error for invalid image data, got nil")
 	}
+}
+
+func TestDecodeImage(t *testing.T) {
+	t.Run("Reader error", func(t *testing.T) {
+		_, err := decodeImage(errorReader{}, "image.png")
+		if err == nil {
+			t.Fatal("expected error, got nil")
+		}
+	})
+
+	t.Run("SVG with invalid content falls back to image.Decode then fails", func(t *testing.T) {
+		_, err := decodeImage(strings.NewReader("not an svg"), "file.svg")
+		if err == nil {
+			t.Fatal("expected error for invalid SVG, got nil")
+		}
+	})
+
+	t.Run("Fallback SVG decode succeeds when image.Decode does not recognize prefix", func(t *testing.T) {
+		img, err := decodeImage(strings.NewReader("   <svg viewBox=\"0 0 50 50\"><circle cx=\"25\" cy=\"25\" r=\"20\" fill=\"red\"/></svg>"), "")
+		if err != nil {
+			t.Fatalf("expected nil error, got %v", err)
+		}
+		if img == nil {
+			t.Fatal("expected non-nil image")
+		}
+	})
 }
 
 func TestNewCommandsInvalidGraphics(t *testing.T) {

@@ -1,10 +1,17 @@
 package svg
 
 import (
+	"errors"
 	"image"
 	"strings"
 	"testing"
 )
+
+type errorReader struct{}
+
+func (errorReader) Read(p []byte) (n int, err error) {
+	return 0, errors.New("read error")
+}
 
 const sampleSVG = `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
@@ -22,6 +29,10 @@ const dimensionSVG = `<svg width="200" height="100">
 
 const noDimensionsSVG = `<svg>
   <circle cx="25" cy="25" r="20" fill="red"/>
+</svg>`
+
+const mediumSVG = `<svg viewBox="0 0 800 600">
+  <rect width="800" height="600" fill="orange"/>
 </svg>`
 
 const largeSVG = `<svg viewBox="0 0 4000 2000">
@@ -80,6 +91,19 @@ func TestDecode(t *testing.T) {
 		}
 	})
 
+	t.Run("Medium SVG unscaled dimensions", func(t *testing.T) {
+		img, err := Decode(strings.NewReader(mediumSVG))
+		if err != nil {
+			t.Fatalf("unexpected error: %v", err)
+		}
+		if img == nil {
+			t.Fatal("expected non-nil image")
+		}
+		if img.Bounds().Dx() != 800 || img.Bounds().Dy() != 600 {
+			t.Errorf("expected 800x600, got %v", img.Bounds())
+		}
+	})
+
 	t.Run("Large SVG capped dimensions", func(t *testing.T) {
 		img, err := Decode(strings.NewReader(largeSVG))
 		if err != nil {
@@ -94,6 +118,20 @@ func TestDecode(t *testing.T) {
 		_, err := Decode(strings.NewReader("not an svg"))
 		if err == nil {
 			t.Fatal("expected error for invalid data, got nil")
+		}
+	})
+
+	t.Run("Reader error", func(t *testing.T) {
+		_, err := Decode(errorReader{})
+		if err == nil {
+			t.Fatal("expected error from errorReader, got nil")
+		}
+	})
+
+	t.Run("Malformed XML syntax error", func(t *testing.T) {
+		_, err := Decode(strings.NewReader("<svg><path d="))
+		if err == nil {
+			t.Fatal("expected syntax error, got nil")
 		}
 	})
 }
@@ -123,6 +161,20 @@ func TestDecodeConfig(t *testing.T) {
 		_, err := DecodeConfig(strings.NewReader("invalid"))
 		if err == nil {
 			t.Fatal("expected error, got nil")
+		}
+	})
+
+	t.Run("Reader error config", func(t *testing.T) {
+		_, err := DecodeConfig(errorReader{})
+		if err == nil {
+			t.Fatal("expected error from errorReader, got nil")
+		}
+	})
+
+	t.Run("Malformed XML config error", func(t *testing.T) {
+		_, err := DecodeConfig(strings.NewReader("<svg><path d="))
+		if err == nil {
+			t.Fatal("expected syntax error, got nil")
 		}
 	})
 }
