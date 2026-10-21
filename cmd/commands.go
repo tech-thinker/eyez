@@ -1,14 +1,17 @@
 package cmd
 
 import (
+	"bytes"
 	"fmt"
 	"image"
+	"io"
 	"os"
 	"strings"
 
 	"github.com/tech-thinker/eyez/consts"
 	"github.com/tech-thinker/eyez/graphics"
 	"github.com/tech-thinker/eyez/resizer"
+	"github.com/tech-thinker/eyez/svg"
 	"github.com/tech-thinker/eyez/validator"
 )
 
@@ -22,6 +25,32 @@ type commands struct {
 	algo resizer.Resizer
 }
 
+func decodeImage(r io.Reader, filename string) (image.Image, error) {
+	data, err := io.ReadAll(r)
+	if err != nil {
+		return nil, err
+	}
+
+	if strings.HasSuffix(strings.ToLower(filename), ".svg") {
+		svgImg, err := svg.Decode(bytes.NewReader(data))
+		if err == nil {
+			return svgImg, nil
+		}
+	}
+
+	img, _, err := image.Decode(bytes.NewReader(data))
+	if err == nil {
+		return img, nil
+	}
+
+	svgImg, svgErr := svg.Decode(bytes.NewReader(data))
+	if svgErr == nil {
+		return svgImg, nil
+	}
+
+	return nil, err
+}
+
 func (c *commands) ByArgs(filename string, width int64) error {
 	err := validator.Validate(filename)
 	if err != nil {
@@ -33,7 +62,8 @@ func (c *commands) ByArgs(filename string, width int64) error {
 		return err
 	}
 	defer f.Close()
-	img, _, err := image.Decode(f)
+
+	img, err := decodeImage(f, filename)
 	if err != nil {
 		return err
 	}
@@ -43,7 +73,7 @@ func (c *commands) ByArgs(filename string, width int64) error {
 }
 
 func (c *commands) ByStdin(in *os.File, width int64) error {
-	img, _, err := image.Decode(in)
+	img, err := decodeImage(in, "")
 	if err != nil {
 		return err
 	}

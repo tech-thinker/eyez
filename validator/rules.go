@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-var supportedExtensions = []string{".png", ".jpg", ".jpeg", ".gif", ".bmp", ".webp"}
+var supportedExtensions = []string{".png", ".jpg", ".jpeg", ".gif", ".bmp", ".webp", ".svg"}
 
 func Validate(filename string) error {
 

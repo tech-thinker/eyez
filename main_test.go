@@ -100,6 +100,17 @@ func createTempPNG(t *testing.T) string {
 	return path
 }
 
+func createTempSVG(t *testing.T) string {
+	t.Helper()
+	dir := t.TempDir()
+	path := filepath.Join(dir, "test_image.svg")
+	svgContent := `<svg viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg"><rect width="50" height="50" fill="red"/></svg>`
+	if err := os.WriteFile(path, []byte(svgContent), 0644); err != nil {
+		t.Fatalf("could not create temp svg file: %v", err)
+	}
+	return path
+}
+
 func TestMainValidFile(t *testing.T) {
 	oldArgs := os.Args
 	defer func() { os.Args = oldArgs }()
@@ -108,12 +119,59 @@ func TestMainValidFile(t *testing.T) {
 	os.Args = []string{"eyez", path}
 
 	oldStdout := os.Stdout
-	_, w, _ := os.Pipe()
+	r, w, _ := os.Pipe()
 	os.Stdout = w
+
+	go io.Copy(io.Discard, r)
 
 	main()
 
 	w.Close()
+	os.Stdout = oldStdout
+}
+
+func TestMainValidSVGFile(t *testing.T) {
+	oldArgs := os.Args
+	defer func() { os.Args = oldArgs }()
+
+	path := createTempSVG(t)
+	os.Args = []string{"eyez", path}
+
+	oldStdout := os.Stdout
+	r, w, _ := os.Pipe()
+	os.Stdout = w
+
+	go io.Copy(io.Discard, r)
+
+	main()
+
+	w.Close()
+	os.Stdout = oldStdout
+}
+
+func TestMainValidSVGPipe(t *testing.T) {
+	oldArgs := os.Args
+	defer func() { os.Args = oldArgs }()
+	os.Args = []string{"eyez"}
+
+	svgData := []byte(`<svg viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg"><circle cx="25" cy="25" r="20" fill="green"/></svg>`)
+
+	oldStdin := os.Stdin
+	r, w, _ := os.Pipe()
+	os.Stdin = r
+	w.Write(svgData)
+	w.Close()
+	defer func() { os.Stdin = oldStdin }()
+
+	oldStdout := os.Stdout
+	rStd, wStd, _ := os.Pipe()
+	os.Stdout = wStd
+
+	go io.Copy(io.Discard, rStd)
+
+	main()
+
+	wStd.Close()
 	os.Stdout = oldStdout
 }
 
@@ -134,8 +192,10 @@ func TestMainValidPipe(t *testing.T) {
 	defer func() { os.Stdin = oldStdin }()
 
 	oldStdout := os.Stdout
-	_, wStd, _ := os.Pipe()
+	rStd, wStd, _ := os.Pipe()
 	os.Stdout = wStd
+
+	go io.Copy(io.Discard, rStd)
 
 	main()
 
