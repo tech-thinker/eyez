@@ -41,6 +41,16 @@ func TestValidate(t *testing.T) {
 			wantErr:  false,
 		},
 		{
+			name:     "valid svg",
+			filename: "image.svg",
+			wantErr:  false,
+		},
+		{
+			name:     "valid uppercase svg",
+			filename: "image.SVG",
+			wantErr:  false,
+		},
+		{
 			name:     "valid multiple dots supported extension",
 			filename: "image.backup.png",
 			wantErr:  false,

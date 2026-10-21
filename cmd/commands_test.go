@@ -4,6 +4,7 @@ import (
 	"image"
 	"image/color"
 	"image/png"
+	"io"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -56,17 +57,19 @@ func TestNewCommandsValid(t *testing.T) {
 func TestByArgs(t *testing.T) {
 	// Temporarily hijack stdout to prevent printing garbage since graphics algorithms dump to terminal
 	oldStdout := os.Stdout
-	_, w, _ := os.Pipe()
+	r, w, _ := os.Pipe()
 	os.Stdout = w
+	go io.Copy(io.Discard, r)
+	defer func() {
+		os.Stdout = oldStdout
+		w.Close()
+		r.Close()
+	}()
 
 	c := NewCommands(consts.GRAPHICS_ASCII, consts.ALGO_LANCZOS)
 	path := createTempPNG(t)
 
 	err := c.ByArgs(path, 10)
-
-	os.Stdout = oldStdout
-	w.Close()
-
 	if err != nil {
 		t.Errorf("ByArgs expected nil error, got %v", err)
 	}
@@ -90,12 +93,34 @@ func TestByArgs(t *testing.T) {
 	if err == nil {
 		t.Errorf("ByArgs expected error for invalid image data, got nil")
 	}
+
+	// Test valid SVG file
+	validSVGPath := filepath.Join(t.TempDir(), "test.svg")
+	os.WriteFile(validSVGPath, []byte(`<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="red"/></svg>`), 0644)
+	err = c.ByArgs(validSVGPath, 10)
+	if err != nil {
+		t.Errorf("ByArgs expected nil error for valid SVG, got %v", err)
+	}
+
+	// Test invalid SVG data
+	invalidSVGPath := filepath.Join(t.TempDir(), "invalid.svg")
+	os.WriteFile(invalidSVGPath, []byte("not an svg"), 0644)
+	err = c.ByArgs(invalidSVGPath, 10)
+	if err == nil {
+		t.Errorf("ByArgs expected error for invalid SVG data, got nil")
+	}
 }
 
 func TestByStdin(t *testing.T) {
 	oldStdout := os.Stdout
-	_, wStd, _ := os.Pipe()
+	rStd, wStd, _ := os.Pipe()
 	os.Stdout = wStd
+	go io.Copy(io.Discard, rStd)
+	defer func() {
+		os.Stdout = oldStdout
+		wStd.Close()
+		rStd.Close()
+	}()
 
 	c := NewCommands(consts.GRAPHICS_ASCII, consts.ALGO_LANCZOS)
 	path := createTempPNG(t)
@@ -107,12 +132,19 @@ func TestByStdin(t *testing.T) {
 	defer f.Close()
 
 	err = c.ByStdin(f, 10)
-
-	os.Stdout = oldStdout
-	wStd.Close()
-
 	if err != nil {
 		t.Errorf("ByStdin expected nil error, got %v", err)
+	}
+
+	// Test valid SVG via stdin
+	svgPipeR, svgPipeW, _ := os.Pipe()
+	svgPipeW.Write([]byte(`<svg viewBox="0 0 100 100"><rect width="100" height="100" fill="blue"/></svg>`))
+	svgPipeW.Close()
+
+	err = c.ByStdin(svgPipeR, 10)
+	svgPipeR.Close()
+	if err != nil {
+		t.Errorf("ByStdin expected nil error for valid SVG, got %v", err)
 	}
 
 	// Pass invalid image data to deduce image decode error

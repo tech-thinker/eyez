@@ -25,6 +25,7 @@ It’s designed to work seamlessly with tools like `fzf`, pipes, and standard Un
 - BMP
 - GIF
 - WEBP
+- SVG
 
 ### Features
 - View images in terminal (supports most modern terminals)
